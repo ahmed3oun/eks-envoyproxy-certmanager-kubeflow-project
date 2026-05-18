@@ -39,19 +39,13 @@ jobs:
                   terraform_version: 1.14.0
             - name: Init
               working-directory: ./
-              run: terraform init \
-                  -backend-config="bucket=${{ secrets.TF_BACKEND_S3_BUCKET_NAME }}" \
-                  -backend-config="key=${{ secrets.TF_BACKEND_S3_BUCKET_KEY }}" \
-                  -backend-config="region=${{ secrets.TF_BACKEND_S3_BUCKET_REGION }}"
+              run: terraform init -backend-config="bucket=${{ secrets.TF_BACKEND_S3_BUCKET_NAME }}" -backend-config="key=${{ secrets.TF_BACKEND_S3_BUCKET_KEY }}" -backend-config="region=${{ secrets.TF_BACKEND_S3_BUCKET_REGION }}"
             - name: Terraform workspace select
               working-directory: ./
               run: terraform workspace select ${{ github.event.inputs.workspace }} || terraform workspace new ${{ github.event.inputs.workspace }}
             - name: Terraform plan destroy
-              run: terraform plan -destroy \
-                  -var cluster_name=${{ github.event.inputs.cluster_name }}
+              run: terraform plan -destroy -var cluster_name=${{ github.event.inputs.cluster_name }}
               working-directory: ./
             - name: Terraform Apply
-              run: terraform destroy \
-                  -var cluster_name=${{ github.event.inputs.cluster_name }} \
-                  -auto-approve
+              run: terraform destroy -var cluster_name=${{ github.event.inputs.cluster_name }} -auto-approve
               working-directory: ./
